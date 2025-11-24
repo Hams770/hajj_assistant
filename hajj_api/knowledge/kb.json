@@ -1,0 +1,17 @@
+[
+  {
+    "id": "doc1",
+    "title": "Ihram",
+    "content": "Ihram is the sacred state entered before Hajj or Umrah..."
+  },
+  {
+    "id": "doc2",
+    "title": "Tawaf",
+    "content": "Tawaf is circling the Kaaba seven times in a counter-clockwise direction..."
+  },
+  {
+    "id": "doc3",
+    "title": "Sa'i",
+    "content": "Sa'i is walking between Safa and Marwah seven times..."
+  }
+]
