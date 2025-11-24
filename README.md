@@ -40,7 +40,7 @@ The project is divided into two main parts:
 
 ```
 
-hajj-rag-system/
+hajj_assistant/
 │
 ├── backend/                  # Backend (Node.js + RAG)
 │   ├── server.js             # Main API entry point
