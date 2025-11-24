@@ -2,81 +2,103 @@
 
 An AI assistant that answers questions about **Hajj and Umrah** using:
 
-- A custom **Hajj & Umrah knowledge base** (`knowledge.json`)
-- A simple **RAG (Retrieval-Augmented Generation)** backend (Node.js + Express + OpenAI)
-- A **React + Vite + Tailwind CSS** frontend chat interface
+* A custom **Hajj & Umrah knowledge base** (`knowledge.json`)
+* A simple **RAG (Retrieval-Augmented Generation)** backend (Node.js + Express + OpenAI)
+* A **React + Vite + Tailwind CSS** frontend chat interface
 
 ---
 
 # 📦 1. Project Structure
 
 ```text
-hajj-rag-system/
+hajj-assistant/
 │
-├── backend/                # RAG + LLM API server
+├── hajj_api/                  # RAG backend
+│   ├── api.js
+│   ├── engine/
+│   │   ├── processor.js
+│   │   └── finder.js
+│   ├── core/
+│   │   └── openaiClient.js
+│   ├── config/
+│   │   └── settings.js
+│   ├── knowledge/
+│   │   └── kb.json            # Knowledge base
+│   └── package.json
+│
+├── Hajj_UI/                   # Frontend (React + Vite + Tailwind)
+│   ├── index.html
 │   ├── package.json
-│   ├── server.js           # Express server + /api/chat endpoint
-│   ├── ragEngine.js        # Retrieval + prompt building + OpenAI call
-│   ├── retriever.js        # Simple bag-of-words retriever
-│   ├── .env                # OPENAI_API_KEY, PORT, etc. (not committed)
-│   └── data/
-│       └── knowledge.json  # Hajj & Umrah knowledge base
-│
-└── hajj-ui/                # Frontend (React + Vite + Tailwind)
-    ├── package.json
-    ├── index.html
-    ├── vite.config.js
-    ├── tailwind.config.js
-    ├── postcss.config.js
-    └── src/
-        ├── main.jsx
-        ├── App.jsx
-        ├── HajjUmrahChat.jsx
-        └── index.css
-
-
+│   ├── vite.config.js
+│   ├── tailwind.config.js
+│   ├── postcss.config.js
+│   ├── src/
+│   │   ├── main.jsx
+│   │   ├── App.jsx
+│   │   ├── ChatAssistant.jsx
+│   │   ├── LanguageSwitcher.jsx
+│   │   ├── GuidePanel.jsx
+│   │   └── styles/
+│   │       └── base.css
+│   └── public/
+│       └── icons/
+│           ├── chat.svg
+│           ├── guide.svg
+│           └── settings.svg
 ```
+
 ---
 
 # 🚀 Features
 
-### ✔ Retrieval-Augmented Generation  
-The system retrieves the **most relevant Islamic knowledge** (Hajj & Umrah rituals, steps, rulings) before sending the context to an LLM.
+### ✔ Retrieval-Augmented Generation
 
-### ✔ Safe & Faithful Islamic Answers  
-The prompt instructs the model to **only answer based on the provided knowledge** and avoid speculation.
+Retrieves the **most relevant Islamic knowledge** (Hajj & Umrah rituals, rulings, steps) before sending context to the LLM.
 
-### ✔ Simple Retriever  
-A lightweight tokenizer + shared-word similarity algorithm.
+### ✔ Safe & Faithful Islamic Answers
 
-### ✔ Modern Frontend UI  
-- Beautiful Hajj-themed interface  
-- Suggested starter questions  
-- Smooth chat scrolling  
-- Loading animation  
+The model answers **strictly from the provided knowledge**.
+
+### ✔ Lightweight Custom Retriever
+
+A simple similarity-based retriever.
+
+### ✔ Modern Frontend UI
+
+* Hajj-themed responsive layout
+* Smooth chat experience
+* Starter questions
+* Loading animation
 
 ---
 
 # 🔧 Backend Setup (Node.js + Express + OpenAI)
 
 ## 1. Install dependencies
+
 ```bash
-cd backend
+cd hajj_api
 npm install
 ```
-# 3.2 Create environment variables
 
-Create backend/.env:
-OPENAI_API_KEY=sk-proj-xxxxxxxxxxxxxxxxxxxx
+## 2. Create `.env`
+
+```
+OPENAI_API_KEY=sk-proj-xxxxxxxxxxxx
 PORT=3001
+```
 
-# 3.3 Knowledge Base (knowledge.json)
+## 3. Knowledge Base
 
-Located inside:
-backend/data/knowledge.json
+Located at:
 
-Contains structured Islamic information, e.g.:
+```
+hajj_api/knowledge/kb.json
+```
 
+Example:
+
+```json
 {
   "id": "hajj_001",
   "title": "Pillars of Hajj",
@@ -84,106 +106,139 @@ Contains structured Islamic information, e.g.:
   "content": "The five pillars (Arkan) of Hajj are...",
   "tags": ["pillars", "arkan", "obligatory"]
 }
+```
 
-# 3.4 Run backend
+## 4. Run backend
+
+```bash
 npm start
+```
 
-Your backend will start at:
+Backend URL:
+
+```
 http://localhost:3001
+```
 
-Test:
+Health check:
+
+```
 http://localhost:3001/api/health
+```
 
+---
 
-## 🎨 4. Frontend Setup (React + Vite + Tailwind)
-# 4.1 Install dependencies
-cd hajj-ui
+## 🎨 Frontend Setup (React + Vite + Tailwind)
+
+### 1. Install dependencies
+
+```bash
+cd Hajj_UI
 npm install
+```
 
-# 4.2 Configure Tailwind
-tailwind.config.js:
+### 2. Tailwind Configuration
+
+**tailwind.config.js**:
+
+```js
 module.exports = {
   content: ["./index.html", "./src/**/*.{js,jsx}"],
   theme: { extend: {} },
   plugins: [],
 };
+```
 
+**postcss.config.js**:
 
-postcss.config.js:
+```js
 module.exports = {
   plugins: {
     tailwindcss: {},
     autoprefixer: {},
   },
 };
+```
 
+**src/base.css**:
 
-src/index.css:
+```css
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+```
 
-# 4.3 Vite Proxy (to backend)
+### 3. Vite Proxy
 
-vite.config.js:
+**vite.config.js**:
+
+```js
 server: {
   proxy: {
     "/api": "http://localhost:3001"
   }
 }
+```
 
+### 4. Run frontend
 
-# 4.4 Run frontend
+```bash
 npm run dev
+```
 
-Frontend runs at:
+Frontend URL:
+
+```
 http://localhost:5173
+```
 
+---
 
-## 🔁 5. How the RAG Pipeline Works
-User asks a question
+# 🔁 How the RAG Pipeline Works
 
-Frontend sends:
+1. User asks a question in the React UI.
+2. Frontend sends:
+
+```
 POST /api/chat
+```
 
-Backend:
-Retrieves relevant documents
-Builds a context-rich prompt
-Sends prompt to OpenAI
-OpenAI generates answer
-Backend returns { answer }
-UI displays answer
+3. Backend retrieves the most relevant passages from `kb.json`.
+4. Backend builds a secure prompt:
 
-6. How the RAG Pipeline Works
-User asks a question in the React UI.
-Frontend sends POST /api/chat with { message }.
+   * Context documents
+   * User question
+   * Faithful-answer rules
+5. Sends prompt to OpenAI.
+6. Returns `{ answer }`.
+7. UI displays the message.
 
-Backend:
-Uses SimpleRetriever to find top-K documents from knowledge.json.
+---
 
-Builds a prompt combining:
-Selected context passages
-The user’s question
-Safety/faithfulness instructions.
-Sends prompt to the OpenAI model.
-Model responds with an answer.
-Backend returns { answer } to the frontend.
-UI displays the answer as the assistant’s message.
+# 🧪 Testing the RAG System
 
+Try:
 
-## 🧪 Testing the RAG System
+* "What are the pillars of Hajj?"
+* "Explain the steps of Umrah."
+* "What happens on the Day of Arafat?"
+* "What is Ihram?"
+* "What are the prohibitions during Ihram?"
+* "What is Tawaf al-Wida?"
 
-Try these:
-"What are the pillars of Hajj?"
-"Explain the steps of Umrah."
-"What happens on the Day of Arafat?"
-"What is Ihram?"
-"What are the prohibitions during Ihram?"
-"What is Tawaf al-Wida?"
+---
 
-## 7. Possible Extensions
-Add more Hajj & Umrah entries to knowledge.json.
-Support Arabic answers or bilingual mode.
-Use embeddings for more advanced retrieval.
-Store and show previous conversations per user.
-Deploy backend (Render/Railway) and frontend (Vercel/Netlify).
+# 📌 Future Extensions
+
+* Expand the knowledge base
+* Arabic/English dual-mode
+* Use embeddings instead of BoW retriever
+* Save chat histories
+* Deploy backend (Railway/Render) + frontend (Vercel/Netlify)
+
+---
+
+## 👥 Team Members
+
+* **Albatool Moathen**
+* **Hams Aljohani**
